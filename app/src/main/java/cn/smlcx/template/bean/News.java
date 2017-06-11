@@ -69,4 +69,16 @@ public class News {
 	public void setUrl(String url) {
 		this.url = url;
 	}
+
+	public News(String id, String title, String source, String firstImg, String mark, String url) {
+		this.id = id;
+		this.title = title;
+		this.source = source;
+		this.firstImg = firstImg;
+		this.mark = mark;
+		this.url = url;
+	}
+
+	public News() {
+	}
 }

@@ -2,8 +2,6 @@ package cn.smlcx.template.api;
 
 import android.util.Log;
 
-import java.util.List;
-
 import cn.smlcx.template.bean.HttpResult;
 import rx.Observable;
 import rx.Subscriber;
@@ -22,24 +20,21 @@ public class RxHelper {
 	 * @param <T>
 	 * @return
 	 */
-	public static <T> Observable.Transformer<HttpResult<T>, List<T>> handleResult() {
-		return new Observable.Transformer<HttpResult<T>, List<T>>() {
+	public static <T> Observable.Transformer<HttpResult<T>, T> handleResult() {
+		return new Observable.Transformer<HttpResult<T>, T>() {
 			@Override
-			public Observable<List<T>> call(Observable<HttpResult<T>> tObservable) {
-				return tObservable.flatMap(new Func1<HttpResult<T>, Observable<List<T>>>() {
+			public Observable<T> call(Observable<HttpResult<T>> tObservable) {
+				return tObservable.flatMap(new Func1<HttpResult<T>, Observable<T>>() {
 					@Override
-					public Observable<List<T>> call(HttpResult<T> result) {
-						Log.e("code",result.getError_code()+"");
+					public Observable<T> call(HttpResult<T> result) {
+						Log.d("code", "call: "+result.getError_code());
 						if (result.getError_code() == 0) {
-							return createData(result.getResult().getList());
+							return createData(result.getResult());
 						} else {
 							return Observable.error(new ApiException(result.getError_code()));
 						}
 					}
-				}).subscribeOn(Schedulers.io())
-						.unsubscribeOn(Schedulers.io())
-						.subscribeOn(AndroidSchedulers.mainThread())
-						.observeOn(AndroidSchedulers.mainThread());
+				}).subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribeOn(AndroidSchedulers.mainThread()).observeOn(AndroidSchedulers.mainThread());
 			}
 		};
 	}
@@ -51,10 +46,10 @@ public class RxHelper {
 	 * @param <T>
 	 * @return
 	 */
-	private static <T> Observable<List<T>> createData(final List<T> data) {
-		return Observable.create(new Observable.OnSubscribe<List<T>>() {
+	private static <T> Observable<T> createData(final T data) {
+		return Observable.create(new Observable.OnSubscribe<T>() {
 			@Override
-			public void call(Subscriber<? super List<T>> subscriber) {
+			public void call(Subscriber<? super T> subscriber) {
 				try {
 					subscriber.onNext(data);
 					subscriber.onCompleted();

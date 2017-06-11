@@ -20,7 +20,7 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:textColor="#FF0000"
-            android:text="当前无网络连接"
+            android:text="无法连接到服务器"
             android:textSize="14sp"/>
     </FrameLayout>
 
@@ -47,9 +47,9 @@
         android:id="@+id/empty_loading"
         android:visibility="gone"
         android:padding="20dp"
-        style="@style/SpinKitView.Circle"
+        style="@style/SpinKitView.FadingCircle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        app:SpinKit_Color="#ff0000" />
+        app:SpinKit_Color="@color/colorPrimary" />
 </FrameLayout>

@@ -25,11 +25,7 @@ public class SplashActivity extends BaseActivity {
 	@Override
 	protected void initViews() {
 		mIvSplsh.setImageBitmap(ImageLoader.load(mContext, R.mipmap.splash));
-	}
-
-	@Override
-	protected void initPresenter() {
-
+		getToolBar().hide();
 	}
 
 	@Override

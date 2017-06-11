@@ -26,12 +26,12 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
 	protected P mPresenter;
 	public Context mContext;
 	public View view;
-	@BindView(R.id.toolbar)
-	Toolbar mToolbar;
+
+	private Toolbar mToolbar;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-		view = inflater.inflate(R.layout.activity_home, container, false);
+		view = inflater.inflate(R.layout.base_layout, container, false);
 		ButterKnife.bind(getActivity());
 		init();
 		initViews();

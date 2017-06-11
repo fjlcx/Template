@@ -6,8 +6,9 @@ package cn.smlcx.template.api;
 
 public class ApiException extends RuntimeException{
 
-	public static final int USER_NOT_EXIST = 100;
-	public static final int WRONG_PASSWORD = 101;
+	public static final int ERROR_KEY = 10001;//	错误的请求KEY
+	public static final int UNABLE_KEY = 10002;//	该KEY无请求权限
+	public static final int OVERDUE_KEY = 10003;//    KEY过期
 	private static String message;
 
 	public ApiException(int resultCode) {
@@ -16,6 +17,7 @@ public class ApiException extends RuntimeException{
 
 	public ApiException(String detailMessage) {
 		super(detailMessage);
+		message = detailMessage;
 	}
 
 	@Override
@@ -31,11 +33,14 @@ public class ApiException extends RuntimeException{
 	 */
 	private static String getApiExceptionMessage(int code){
 		switch (code) {
-			case USER_NOT_EXIST:
-				message = "该用户不存在";
+			case ERROR_KEY:
+				message = "错误的请求KEY";
 				break;
-			case WRONG_PASSWORD:
-				message = "密码错误";
+			case UNABLE_KEY:
+				message = "该KEY无请求权限";
+				break;
+			case OVERDUE_KEY:
+				message = "KEY过期";
 				break;
 			default:
 				message = "未知错误";

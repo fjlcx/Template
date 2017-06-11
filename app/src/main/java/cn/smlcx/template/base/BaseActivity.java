@@ -7,6 +7,9 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import javax.inject.Inject;
@@ -26,9 +29,8 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
 	@Nullable
 	@BindView(R.id.empty_layout)
 	EmptyLayout mEmptyLayout;
-	@Nullable
-	@BindView(R.id.toolbar)
-	Toolbar mToolbar;
+
+	private Toolbar mToolbar;
 
 	@Inject
 	protected P mPresenter;
@@ -43,13 +45,33 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
 		init();
 	}
 
+	@Override
+	public void setContentView(@LayoutRes int layoutResID) {
+		View view = getLayoutInflater().inflate(R.layout.base_layout, null);
+		super.setContentView(view);
+		initDefaultView(layoutResID);
+	}
+
+	private void initDefaultView(int layoutResId) {
+		mToolbar = (Toolbar) findViewById(R.id.toolbar);
+		FrameLayout container = (FrameLayout) findViewById(R.id.container);
+		View childView = LayoutInflater.from(this).inflate(layoutResId, null);
+		container.addView(childView, 0);
+	}
+
 	private void init() {
 		mContext = this;
 		mToolBarSet = new ToolBarSet(mToolbar,this);
 		initInject();
 		initViews();
-		initPresenter();
 		initData();
+		/*//当系统版本为4.4或者4.4以上时可以使用沉浸式状态栏
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+			//透明状态栏
+			getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+			//透明导航栏
+			getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+		}*/
 	}
 
 	/**
@@ -63,11 +85,6 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
 	 * 初始化视图控件
 	 */
 	protected abstract void initViews();
-
-	/**
-	 * 初始化presenter
-	 */
-	protected abstract void initPresenter();
 
 	/**
 	 * 初始化数据
@@ -146,7 +163,8 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
 	 * 页面跳转
 	 * @param clz
 	 */
-	protected void startActivity(Class<?> clz) {
+	@Override
+	public void startActivity(Class<?> clz) {
 		startActivity(new Intent(BaseActivity.this,clz));
 	}
 
@@ -155,7 +173,8 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
 	 * @param clz
 	 * @param bundle
 	 */
-	protected void startActivity(Class<?> clz, Bundle bundle) {
+	@Override
+	public void startActivity(Class<?> clz, Bundle bundle) {
 		Intent intent = new Intent();
 		intent.setClass(this, clz);
 		if (bundle != null) {
@@ -168,13 +187,33 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
 	 * 简化Toast
 	 * @param msg
 	 */
-	protected void showToast(String msg){
+	@Override
+	public void showToast(String msg){
 		Toast.makeText(this,msg,Toast.LENGTH_SHORT).show();
+	}
+
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		if (mPresenter!=null){
+			mPresenter.unSubscribe();
+		}
 	}
 
 }

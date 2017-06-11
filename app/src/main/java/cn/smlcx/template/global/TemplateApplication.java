@@ -2,6 +2,8 @@ package cn.smlcx.template.global;
 
 import android.app.Application;
 
+import com.squareup.leakcanary.LeakCanary;
+
 import cn.smlcx.template.di.component.AppComponent;
 import cn.smlcx.template.di.component.DaggerAppComponent;
 import cn.smlcx.template.di.module.AppModule;
@@ -16,6 +18,7 @@ public class TemplateApplication extends Application {
 	public void onCreate() {
 		super.onCreate();
 		instance = this;
+		LeakCanary.install(this);
 		getAppComponent();
 	}
 
